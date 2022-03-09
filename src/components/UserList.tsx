@@ -1,9 +1,29 @@
-import React, { FC } from 'react';
+import React, { FC, useEffect } from 'react';
+import { useDispatch } from 'react-redux';
+import { fetchUsers } from '../store/action-creators/user';
 import { useTypedSelector } from './hooks/useTypedSelector';
 
 const UserList: FC = () => {
 	const { users, error, loading } = useTypedSelector(state => state.user);
-	return <div></div>;
+	const dispatch = useDispatch();
+
+	useEffect(() => {
+		dispatch(fetchUsers());
+	}, []);
+
+	if (loading) {
+		return <h1>Идет загрузка...</h1>;
+	}
+	if (error) {
+		return <h1>{error}</h1>;
+	}
+	return (
+		<div>
+			{users.map((user, index) => (
+				<div key={index * Math.random()}>{user.name}</div>
+			))}
+		</div>
+	);
 };
 
 export default UserList;
